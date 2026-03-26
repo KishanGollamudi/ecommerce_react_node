@@ -1,0 +1,26 @@
+# docker-compose.yml
+
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: smartcart-backend
+    ports:
+      - "5000:5000"
+    networks:
+      - smartcart-network
+
+  frontend:
+    build: ./frontend
+    container_name: smartcart-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - smartcart-network
+
+networks:
+  smartcart-network:
+    driver: bridge
