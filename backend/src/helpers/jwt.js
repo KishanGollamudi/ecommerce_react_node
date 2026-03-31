@@ -1,7 +1,6 @@
 import JWT from "jsonwebtoken";
 import Boom from "boom";
-
-import redis from "../clients/redis";
+import User from "../models/user";
 
 const signAccessToken = (data) => {
 	return new Promise((resolve, reject) => {
@@ -17,7 +16,7 @@ const signAccessToken = (data) => {
 		JWT.sign(payload, process.env.JWT_SECRET, options, (err, token) => {
 			if (err) {
 				console.log(err);
-				reject(Boom.internal());
+				return reject(Boom.internal());
 			}
 
 			resolve(token);
@@ -26,12 +25,16 @@ const signAccessToken = (data) => {
 };
 
 const verifyAccessToken = (req, res, next) => {
-	const authorizationToken = req.headers["authorization"];
-	if (!authorizationToken) {
-		next(Boom.unauthorized());
+	const authorizationHeader = req.headers["authorization"];
+	if (!authorizationHeader) {
+		return next(Boom.unauthorized());
 	}
 
-	JWT.verify(authorizationToken, process.env.JWT_SECRET, (err, payload) => {
+	const authorizationToken = authorizationHeader.startsWith("Bearer ")
+		? authorizationHeader.split(" ")[1]
+		: authorizationHeader;
+
+	return JWT.verify(authorizationToken, process.env.JWT_SECRET, (err, payload) => {
 		if (err) {
 			return next(
 				Boom.unauthorized(
@@ -58,12 +61,22 @@ const signRefreshToken = (user_id) => {
 		JWT.sign(payload, process.env.JWT_REFRESH_SECRET, options, (err, token) => {
 			if (err) {
 				console.log(err);
-				reject(Boom.internal());
+				return reject(Boom.internal());
 			}
 
-			redis.set(user_id, token, "EX", 180 * 24 * 60 * 60);
+			return User.findByIdAndUpdate(
+				user_id,
+				{ refreshToken: token },
+				{ new: true }
+			)
+				.then((user) => {
+					if (!user) {
+						return reject(Boom.unauthorized());
+					}
 
-			resolve(token);
+					return resolve(token);
+				})
+				.catch(() => reject(Boom.internal()));
 		});
 	});
 };
@@ -79,15 +92,17 @@ const verifyRefreshToken = async (refresh_token) => {
 				}
 
 				const { user_id } = payload;
-				const user_token = await redis.get(user_id);
+				const user = await User.findById(user_id).select("+refreshToken");
 
-				if (!user_token) {
+				if (!user?.refreshToken) {
 					return reject(Boom.unauthorized());
 				}
 
-				if (refresh_token === user_token) {
+				if (refresh_token === user.refreshToken) {
 					return resolve(user_id);
 				}
+
+				return reject(Boom.unauthorized());
 			}
 		);
 	});

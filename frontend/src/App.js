@@ -9,6 +9,7 @@ import Basket from "./pages/Basket/index";
 import Error404 from "./pages/Error404/index";
 import ProductedProfile from "./pages/ProductedRoute/ProductedProfile";
 import ProductedAdmin from "./pages/ProductedRoute/ProductedAdmin";
+import AdminHome from "./pages/Admin/AdminHome";
 import Orders from "./pages/Admin/Orders";
 import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminProductDetail from "./pages/Admin/AdminProductDetail";
@@ -20,14 +21,14 @@ function App() {
       <Navbar />
       <div id="content">
         <Routes>
-          <Route path="/" exect index element={<Products />} />
+          <Route path="/" element={<Products />} />
           <Route path="/product/:product_id" element={<ProductDetail />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/basket" element={<Basket />} />
           <Route path="/profile" element={<ProductedProfile />} />
-          <Route path="/admin">
-            <Route index element={<ProductedAdmin />} />
+          <Route path="/admin" element={<ProductedAdmin />}>
+            <Route index element={<AdminHome />} />
             <Route path="orders" element={<Orders />} />
             <Route path="products">
               <Route index element={<AdminProducts />} />

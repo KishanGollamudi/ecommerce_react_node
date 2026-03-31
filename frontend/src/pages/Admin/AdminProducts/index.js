@@ -51,7 +51,6 @@ function AdminProducts() {
                   },
                 });
               }}
-              onCancel={() => console.log("iptal edildi")}
               okText="Yes"
               cancelText="No"
               placement="left"

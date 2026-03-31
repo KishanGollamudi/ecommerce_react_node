@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _mongoose = require('mongoose'); var _mongoose2 = _interopRequireDefault(_mongoose);
 
-const Schema = mongoose.Schema;
+const Schema = _mongoose2.default.Schema;
 
 const OrderSchema = new Schema({
   user: {
@@ -27,6 +27,6 @@ const OrderSchema = new Schema({
 OrderSchema.set('toJSON', { virtuals: true });
 OrderSchema.set('toObject', { virtuals: true });
 
-const Order = mongoose.model('order', OrderSchema);
+const Order = _mongoose2.default.model('order', OrderSchema);
 
-export default Order;
+exports. default = Order;

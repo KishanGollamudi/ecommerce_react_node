@@ -22,7 +22,17 @@ router.get(
 );
 // router.get('/', cache.route(), Product.GetList);
 router.get("/", Product.GetList);
-router.put("/:product_id", Product.Update);
-router.delete("/:product_id", Product.Delete);
+router.put(
+	"/:product_id",
+	verifyAccessToken,
+	grantAccess("updateAny", "product"),
+	Product.Update
+);
+router.delete(
+	"/:product_id",
+	verifyAccessToken,
+	grantAccess("deleteAny", "product"),
+	Product.Delete
+);
 
 export default router;

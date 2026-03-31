@@ -1,21 +1,41 @@
-# docker-compose.yml
-
-version: "3.8"
-
 services:
-  backend:
-    build: ./backend
-    container_name: smartcart-backend
+  mongodb:
+    image: mongo:7
+    container_name: smartcart-mongodb
     ports:
-      - "5000:5000"
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - smartcart-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smartcart-backend
+    environment:
+      PORT: 4000
+      MONGO_URI: mongodb://mongodb:27017/ecommerce
+      JWT_SECRET: change-me-access-secret
+      JWT_REFRESH_SECRET: change-me-refresh-secret
+      CORS_ORIGIN: http://localhost:3000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
     networks:
       - smartcart-network
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_BASE_ENDPOINT: http://localhost:4000
     container_name: smartcart-frontend
     ports:
-      - "3000:3000"
+      - "3000:80"
     depends_on:
       - backend
     networks:
@@ -24,3 +44,6 @@ services:
 networks:
   smartcart-network:
     driver: bridge
+
+volumes:
+  mongodb-data:

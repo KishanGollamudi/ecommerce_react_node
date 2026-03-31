@@ -23,7 +23,7 @@ import { useBasket } from "../../contexts/BasketContext";
 import { postOrder } from "../../api.js";
 
 function Basket() {
-  const [address, setAddress] = useState();
+  const [address, setAddress] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef(null);
 
@@ -48,14 +48,14 @@ function Basket() {
       {items.length < 1 && (
         <Alert status="warning">
           <AlertIcon />
-          You have not any items in your basket.
+          Your basket is empty.
         </Alert>
       )}
       {items.length > 0 && (
         <>
-          <ul style={({ listStyleType: "decimal" }, { display: "flex" })}>
+          <ul style={{ display: "flex", listStyleType: "decimal" }}>
             {items.map((item) => (
-              <li key={item._id} style={({ margin: 20 }, { width: "25%" })}>
+              <li key={item._id} style={{ margin: 20, width: "25%" }}>
                 <Link to={`/product/${item._id}`}>
                   <Text fontSize="22">
                     {item.title} - {item.price} $
@@ -92,14 +92,14 @@ function Basket() {
           <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Create your account</ModalHeader>
+              <ModalHeader>Complete your order</ModalHeader>
               <ModalCloseButton />
               <ModalBody pb={6}>
                 <FormControl>
-                  <FormLabel>Adress</FormLabel>
+                  <FormLabel>Address</FormLabel>
                   <Textarea
                     ref={initialRef}
-                    placeholder="Adress"
+                    placeholder="Address"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
@@ -108,7 +108,7 @@ function Basket() {
 
               <ModalFooter>
                 <Button colorScheme="blue" mr={3} onClick={handleSubmitForm}>
-                  Save
+                  Place order
                 </Button>
                 <Button onClick={onClose}>Cancel</Button>
               </ModalFooter>

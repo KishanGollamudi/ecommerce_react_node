@@ -7,8 +7,14 @@ import limiter from './rate-limiter';
 import routes from './routes';
 
 const app = express();
+const port = Number(process.env.PORT || 4000);
+const corsOrigin = process.env.CORS_ORIGIN?.split(',').map((origin) => origin.trim()).filter(Boolean);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: corsOrigin?.length ? corsOrigin : true,
+  })
+);
 app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,4 +37,4 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(4000, () => console.log('Server is up!'));
+app.listen(port, () => console.log(`Server is up on port ${port}!`));

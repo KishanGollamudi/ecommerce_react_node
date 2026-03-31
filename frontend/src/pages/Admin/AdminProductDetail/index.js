@@ -31,7 +31,6 @@ function AdminProductDetail() {
     return <div>Error {error.message}</div>;
   }
   const handleSubmit = async (values, bag) => {
-    console.log("submitted");
     message.loading({ content: "Loading... ", key: "product_update" });
 
     try {
@@ -62,7 +61,7 @@ function AdminProductDetail() {
         </ul>
       </nav>
       <Box mt={10}>
-        <Text fontsize="2xl">Edit</Text>
+        <Text fontSize="2xl">Edit</Text>
         <Formik
           initialValues={{
             title: data.title,

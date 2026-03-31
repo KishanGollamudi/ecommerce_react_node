@@ -10,7 +10,6 @@ import {
 
 // validations
 import ValidationSchema from "./validations";
-import redis from "../../clients/redis";
 
 const Register = async (req, res, next) => {
 	const input = req.body;
@@ -97,7 +96,16 @@ const RefreshToken = async (req, res, next) => {
 		}
 
 		const user_id = await verifyRefreshToken(refresh_token);
-		const accessToken = await signAccessToken(user_id);
+		const user = await User.findById(user_id).select("_id role");
+
+		if (!user) {
+			throw Boom.unauthorized();
+		}
+
+		const accessToken = await signAccessToken({
+			user_id: user._id,
+			role: user.role,
+		});
 		const refreshToken = await signRefreshToken(user_id);
 
 		res.json({ accessToken, refreshToken });
@@ -114,15 +122,18 @@ const Logout = async (req, res, next) => {
 		}
 
 		const user_id = await verifyRefreshToken(refresh_token);
-		const data = await redis.del(user_id);
+		const user = await User.findByIdAndUpdate(
+			user_id,
+			{ refreshToken: null },
+			{ new: true }
+		);
 
-		if (!data) {
+		if (!user) {
 			throw Boom.badRequest();
 		}
 
 		res.json({ message: "success" });
 	} catch (e) {
-		console.log(e);
 		return next(e);
 	}
 };

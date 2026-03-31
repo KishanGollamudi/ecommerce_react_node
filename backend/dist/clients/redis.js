@@ -1,4 +1,4 @@
-const Redis = require("ioredis");
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});const Redis = require("ioredis");
 
 const redisOptions = process.env.REDIS_URL
   ? process.env.REDIS_URL
@@ -9,4 +9,4 @@ const redisOptions = process.env.REDIS_URL
 
 const redis = new Redis(redisOptions);
 
-export default redis;
+exports. default = redis;

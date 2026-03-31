@@ -22,7 +22,6 @@ function NewProduct() {
   });
 
   const handleSubmit = async (values, bag) => {
-    console.log(values);
     message.loading({ content: "Loading...", key: "product_update" });
 
     const newValues = {
@@ -57,7 +56,7 @@ function NewProduct() {
         </ul>
       </nav>
       <Box mt={10}>
-        <Text fontsize="2xl">Edit</Text>
+        <Text fontSize="2xl">New Product</Text>
         <Formik
           initialValues={{
             title: "",

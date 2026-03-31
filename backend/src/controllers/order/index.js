@@ -1,4 +1,3 @@
-import User from '../../models/user';
 import Order from '../../models/order';
 import Boom from 'boom';
 import OrderSchema from './validations';
@@ -17,7 +16,7 @@ const Create = async (req, res, next) => {
   try {
     const order = new Order({
       user: user_id,
-      adress: input.address,
+      address: input.address,
       items: input.items,
     });
 
@@ -43,7 +42,7 @@ const GetMyOrders = async (req, res, next) => {
   const { user_id } = req.payload;
 
   try {
-    const orders = await Order.findById(user_id).populate('purchases.item');
+    const orders = await Order.find({ user: user_id }).populate('items');
 
     res.json(orders);
   } catch (e) {

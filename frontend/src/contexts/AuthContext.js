@@ -40,10 +40,12 @@ const AuthProvider = ({ children }) => {
     setLoggedIn(false);
     setUser(null);
 
-    await fetchLogout();
-
-    localStorage.removeItem("access-token");
-    localStorage.removeItem("refresh-token");
+    try {
+      await fetchLogout();
+    } finally {
+      localStorage.removeItem("access-token");
+      localStorage.removeItem("refresh-token");
+    }
   };
 
   const values = {

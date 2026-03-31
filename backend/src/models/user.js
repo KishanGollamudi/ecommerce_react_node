@@ -20,6 +20,11 @@ const UserSchema = new Schema({
 		default: "user",
 		enum: ["user", "admin"],
 	},
+	refreshToken: {
+		type: String,
+		default: null,
+		select: false,
+	},
 });
 
 UserSchema.pre("save", async function (next) {
@@ -32,7 +37,7 @@ UserSchema.pre("save", async function (next) {
 
 		next();
 	} catch (e) {
-		next(error);
+		next(e);
 	}
 });
 
