@@ -1,0 +1,23 @@
+# Set the project and environment naming convention.
+project_name = "ecommerce-platform"
+region       = "ap-south-1"
+environment  = "dev"
+
+# Keep only a few recent images per repository to reduce ECR storage cost.
+ecr_image_retention_count = 5
+
+# Leave this as null to let AWS select the default supported EKS version.
+cluster_version = null
+
+# Keep a single small worker node to reduce baseline cost.
+cluster_name                       = "ecommerce-cluster"
+eks_enabled_log_types              = ["api", "audit", "authenticator"]
+eks_cluster_endpoint_public_access = true
+enable_cluster_creator_admin_permissions = true
+instance_types                     = ["t3.small"]
+node_disk_size                     = 20
+
+# Add extra organization-specific tags if needed.
+tags = {
+  Owner = "platform-team"
+}
